@@ -11,6 +11,12 @@ class Config:
     exec_dir: str
 
 
+# Создавать папку для конфига
+try:
+    os.mkdir('/etc/ssh_manager')
+except FileExistsError:
+    pass
+
 try:
     CONFIG = Config(**json.load(open('/etc/ssh_manager/config.json', 'r')))
 except FileNotFoundError:
@@ -20,14 +26,17 @@ except FileNotFoundError:
 
 
 def enable(name):
+    """Закинуть файл в директорию с исполняемыми файлами"""
     os.system(f'cp {CONFIG.config_dir}/server_connections/ssh_shortcuts/{name}.sh {CONFIG.exec_dir}/{name}.sh')
 
 
 def disable(name):
+    """Убрать файл из директории с исполняемыми файлами"""
     os.system(f'rm {CONFIG.exec_dir}/{name}.sh')
 
 
 def init(config_dir_path, exec_dir_path='/usr/bin'):
+    """Конфигурация приложения"""
     config_dir = Path(config_dir_path)
     exec_dir = Path(exec_dir_path)
     try:
@@ -56,10 +65,12 @@ def init(config_dir_path, exec_dir_path='/usr/bin'):
 
 
 def give_sh_permitions(name):
+    """Дать разрешения файлы для запуска"""
     os.system(f'chmod 777 {CONFIG.config_dir}/server_connections/ssh_shortcuts/{name}.sh')
 
 
 def give_pem_permitions(name):
+    """Дать разрешение файлу с ключём"""
     os.system(f'chmod 600 {CONFIG.config_dir}/server_connections/pem_keys/{name}')
 
 
