@@ -60,7 +60,7 @@ def give_sh_permitions(name):
 
 
 def give_pem_permitions(name):
-    os.system(f'chmod 600 {CONFIG.config_dir}/server_connections/ssh_shortcuts/{name}')
+    os.system(f'chmod 600 {CONFIG.config_dir}/server_connections/pem_keys/{name}')
 
 
 def help():

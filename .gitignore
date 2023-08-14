@@ -2,3 +2,5 @@
 venv/
 dist
 .idea/
+build/
+ssh-manager.spec
