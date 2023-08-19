@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import readchar
 
+CONFIG_DIR = os.path.expanduser('~/ssh_manager')
+
 
 @dataclasses.dataclass
 class Config:
@@ -22,16 +24,14 @@ class Config:
 
 # Создавать папку для конфига
 try:
-    os.mkdir('/etc/ssh_manager')
+    os.mkdir(CONFIG_DIR)
 except FileExistsError:
     pass
 
 try:
-    CONFIG = Config(**json.load(open('/etc/ssh_manager/config.json', 'r')))
+    CONFIG = Config(**json.load(open(f'{CONFIG_DIR}/config.json', 'r')))
 except FileNotFoundError:
-    print(
-        'Необходимо сначала прописать sudo ssh-manager init *Путь к папке с конфигами* '
-        '*Путь к доступной папке, находящейся в переменной PATH*')
+    pass
 except TypeError:
     pass
 
@@ -58,7 +58,7 @@ def disable(name):
 
 
 def _save_active():
-    with open('/etc/ssh_manager/config.json', 'w') as file:
+    with open(f'{CONFIG_DIR}/config.json', 'w') as file:
         json.dump(CONFIG.to_dict(), file)
 
 
@@ -66,17 +66,13 @@ def init(config_dir_path, exec_dir_path='/usr/bin'):
     """Конфигурация приложения"""
     config_dir = Path(config_dir_path)
     exec_dir = Path(exec_dir_path)
-    try:
-        os.mkdir('/etc/ssh_manager')
-    except FileExistsError:
-        pass
     json.dump(
         {
             'config_dir': str(config_dir),
             'exec_dir': str(exec_dir),
             'list_active': []
         },
-        open('/etc/ssh_manager/config.json', 'w')
+        open(f'/{CONFIG_DIR}/config.json', 'w')
     )
     try:
         os.mkdir(config_dir / 'server_connections')
@@ -193,7 +189,7 @@ def main(args):
         func_dict[args[0]](*args[1:])
     except NameError:
         print(
-            'Нужно пересоздать конфиг, возможно вы перешли со старой версии по, пропишите sudo ssh-manager init ещё раз'
+            'Необходимо создать конфиг, пропишите ssh-manager init'
         )
 
 
